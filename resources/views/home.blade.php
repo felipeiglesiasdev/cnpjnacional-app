@@ -4,4 +4,8 @@
 @endpush
 @section('content')
     @include('components.home.hero')
+    @include('components.home.features')
+    @include('components.home.advanced-search-preview')
+    @include('components.home.api-section')
+    @include('components.home.faq')
 @endsection

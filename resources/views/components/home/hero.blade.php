@@ -9,7 +9,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             
             <!-- Coluna da Esquerda: Texto de Impacto -->
-            <div class="text-left order-2 lg:order-1">
+            <div class="text-left">
                 <!-- Badge SEO Friendly -->
                 <div class="inline-flex items-center gap-2 bg-[#ffffff15] backdrop-blur-sm border border-[#ffffff30] rounded-full px-4 py-1.5 mb-8 animate-fade-in-down">
                     <span class="w-2 h-2 rounded-full bg-[#ffd51b] animate-pulse"></span>
@@ -57,7 +57,7 @@
             </div>
 
             <!-- Coluna da Direita: Card de Busca Flutuante -->
-            <div class="relative order-1 lg:order-2">
+            <div class="relative">
                 <!-- Efeito Glow atrás do card -->
                 <div class="absolute -inset-2 bg-gradient-to-tr from-[#ffd51b]/40 to-white/10 rounded-[2rem] blur-2xl opacity-40 animate-pulse"></div>
 
@@ -67,7 +67,8 @@
                         <p class="text-white/60 text-sm mt-1">Busque na base nacional de forma gratuita.</p>
                     </div>
                     
-                    <form action="#" method="GET" class="space-y-5">
+                    <form action="{{ route('cnpj.consultar') }}" method="POST" class="space-y-5">
+                        @csrf
                         <div class="space-y-2">
                             <label for="search" class="text-xs font-semibold text-white/80 uppercase tracking-wider ml-1">Consultar CNPJ Grátis</label>
                             <div class="relative group">
