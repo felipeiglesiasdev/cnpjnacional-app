@@ -5,3 +5,11 @@
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
+@theme {
+    --font-sans: "Outfit", sans-serif;
+    --color-brand-blue: #013886;
+    --color-brand-green: #019171;
+    --color-brand-yellow: #ffd51b;
+    --color-brand-dark: #232323;
+    --color-brand-cream: #fffdf2;
+}
