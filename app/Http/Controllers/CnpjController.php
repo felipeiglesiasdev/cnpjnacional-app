@@ -148,7 +148,7 @@ class CnpjController extends Controller
             'capital_social' => number_format($empresa->capital_social, 2, ',', '.'),
             'porte' => $this->traduzirPorte($empresa->porte_empresa),
             'matriz_ou_filial' => $estabelecimento->identificador_matriz_filial == 1 ? 'Matriz' : 'Filial',
-            'data_abertura' => date('d/m/Y', strtotime($estabelecimento->data_inicio_atividade)),
+            'data_inicio_atividade' => date('d/m/Y', strtotime($estabelecimento->data_inicio_atividade)),
             // Card: Situação Cadastral (NOVOS DADOS)
             'situacao_cadastral' => $situacao['texto'],
             'situacao_cadastral_classe' => $situacao['classe'],

@@ -1,41 +1,42 @@
 @props(['data'])
 
-<div class="bg-white border border-slate-200 rounded-xl shadow-sm p-5 space-y-3">
-    <div class="flex items-center gap-2 text-slate-500 text-sm">
-        <i class="bi bi-building"></i>
-        <span class="font-medium">Informações básicas</span>
+<div class="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100">
+    <div class="flex items-center gap-3 mb-6 border-b border-gray-50 pb-4">
+        <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-[#013886]">
+            <i class="bi bi-info-circle-fill"></i>
+        </div>
+        <h2 class="text-xl font-bold text-[#232323]">Informações Cadastrais</h2>
     </div>
-    
-    {{-- Substituído <dl> por <div> para estrutura mais genérica --}}
-    <div class="grid grid-cols-1 gap-2 text-sm text-slate-700">
-        <div>
-            {{-- Substituído <dt> e <dd> por <p> com classes de estilo --}}
-            <p class="font-semibold text-slate-900">CNPJ</p>
-            <p>{{ $data['cnpj_completo'] ?? 'Não informado' }}</p>
-        </div>
-        <div>
-            <p class="font-semibold text-slate-900">Nome Fantasia</p>
-            <p>{{ $data['nome_fantasia'] ?? 'Não informado' }}</p>
-        </div>
-        <div>
-            <p class="font-semibold text-slate-900">Natureza Jurídica</p>
-            <p>{{ $data['natureza_juridica'] ?? 'Não informado' }}</p>
-        </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-8">
         
-        <div class="grid grid-cols-2 gap-2">
-            <div>
-                <p class="font-semibold text-slate-900">Porte</p>
-                <p>{{ $data['porte'] ?? 'Não informado' }}</p>
-            </div>
-            <div>
-                <p class="font-semibold text-slate-900">Matriz/Filial</p>
-                <p>{{ $data['matriz_ou_filial'] ?? 'Não informado' }}</p>
-            </div>
+        <div class="group">
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 group-hover:text-[#013886] transition-colors">Data de Abertura</p>
+            {{-- Chave atualizada e valor já vem formatado --}}
+            <p class="font-medium text-[#232323]">{{ $data['data_inicio_atividade'] ?? 'Não informada' }}</p>
         </div>
-        
-        <div>
-            <p class="font-semibold text-slate-900">Data de Abertura</p>
-            <p>{{ $data['data_abertura'] ?? 'Não informado' }}</p>
+
+        <div class="group">
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 group-hover:text-[#013886] transition-colors">Porte da Empresa</p>
+            <p class="font-medium text-[#232323]">{{ $data['porte'] ?? 'Não informado' }}</p>
         </div>
+
+        <div class="group">
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 group-hover:text-[#013886] transition-colors">Natureza Jurídica</p>
+            <p class="font-medium text-[#232323]">{{ $data['natureza_juridica'] ?? 'Não informada' }}</p>
+        </div>
+
+        <div class="group">
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 group-hover:text-[#013886] transition-colors">Capital Social</p>
+            {{-- Removido number_format do Blade pois o controller já envia formatado --}}
+            <p class="font-medium text-[#232323]">R$ {{ $data['capital_social'] ?? '0,00' }}</p>
+        </div>
+
+        <div class="group md:col-span-2">
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 group-hover:text-[#013886] transition-colors">Matriz ou Filial</p>
+            {{-- Chave atualizada para matriz_ou_filial --}}
+            <p class="font-medium text-[#232323]">{{ $data['matriz_ou_filial'] ?? 'Não informado' }}</p>
+        </div>
+
     </div>
 </div>

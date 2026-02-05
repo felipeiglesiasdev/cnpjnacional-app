@@ -1,13 +1,25 @@
 @props(['data'])
 
-<div class="bg-blue-50 border border-blue-100 rounded-xl p-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-    <div class="space-y-1">
-        <p class="text-sm font-semibold text-blue-700">LGPD</p>
-        <p class="text-lg font-bold text-slate-900">Deseja remover seus dados desta consulta?</p>
-        <p class="text-sm text-slate-600">Se você é responsável por este CNPJ, solicite a remoção das informações apresentadas.</p>
+<div class="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100 mt-8">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        
+        <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center text-red-500 flex-shrink-0">
+                <i class="bi bi-shield-lock text-2xl"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-bold text-[#232323] mb-1">Remoção de Dados</h3>
+                <p class="text-sm text-gray-500 leading-relaxed max-w-xl">
+                    Você é o sócio ou representante legal desta empresa? Caso deseje, você pode solicitar a remoção destes dados públicos em nossa plataforma.
+                </p>
+            </div>
+        </div>
+
+        <!-- Link para a futura página (rota placeholder '#') -->
+        <a href="#" class="whitespace-nowrap px-6 py-3 rounded-xl bg-white border border-red-100 text-red-600 font-semibold text-sm hover:bg-red-50 hover:border-red-200 transition-all shadow-sm flex items-center gap-2 group">
+            <i class="bi bi-flag group-hover:scale-110 transition-transform"></i>
+            Solicitar Remoção
+        </a>
+
     </div>
-    <a href="" class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 shadow cursor-pointer">
-        <i class="bi bi-shield-lock"></i>
-        Solicitar Remoção de Dados
-    </a>
 </div>
