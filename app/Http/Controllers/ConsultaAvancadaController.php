@@ -147,15 +147,20 @@ class ConsultaAvancadaController extends Controller
             $query->where('cnae_fiscal_principal', $cnaePrincipal);
         }
 
-        // 3.1 CNAES SECUNDÁRIOS
+        // 3.1 CNAES SECUNDÁRIOS (CORRIGIDO: BUSCA EM CAMPO TEXTO)
         if ($request->filled('cnaes_secundarios') && is_array($request->cnaes_secundarios)) {
             $cnaesSecundarios = array_map(function($cnae) {
-                return (int) preg_replace('/[^0-9]/', '', $cnae); // LIMPA E CONVERTE CNAES
+                return (int) preg_replace('/[^0-9]/', '', $cnae); // LIMPA E CONVERTE PARA INT CADA ITEM
             }, $request->cnaes_secundarios);
 
-            // BUSCA EM RELACIONAMENTO (TABELA PIVÔ/FILHA)
-            $query->whereHas('cnaesSecundarios', function ($q) use ($cnaesSecundarios) {
-                $q->whereIn('cnae', $cnaesSecundarios);
+            // COMO É CAMPO TEXTO (CSV), USAMOS LIKE PARA CADA CNAE
+            // AGRUPA AS CONDIÇÕES OR EM UM BLOCO AND PARA NÃO QUEBRAR OUTROS FILTROS
+            $query->where(function ($q) use ($cnaesSecundarios) {
+                foreach ($cnaesSecundarios as $cnae) {
+                    // BUSCA SE A STRING CONTÉM O CNAE (cnae_fiscal_secundaria LIKE '%12345%')
+                    // Nome da coluna assumido: cnae_fiscal_secundaria
+                    $q->orWhere('cnae_fiscal_secundaria', 'like', "%{$cnae}%");
+                }
             });
         }
 

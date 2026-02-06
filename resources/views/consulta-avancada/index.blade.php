@@ -44,7 +44,7 @@
                     
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                         <h2 class="text-xl md:text-2xl font-bold text-[#013886] flex items-center gap-2">
-                            <i class="bi bi-list-check"></i> Resultados Encontrados <span class="text-sm font-normal text-gray-500 ml-2">({{ $resultados->total() }} empresas)</span>
+                            <i class="bi bi-list-check"></i> Resultados Encontrados <span class="text-sm font-normal text-gray-500 ml-2">({{ $resultados->count() }} empresas)</span>
                         </h2>
                         
                         <!-- Aviso de Limite -->
@@ -87,10 +87,6 @@
                         @endforeach
                     </div>
 
-                    <!-- Paginação (Opcional, se quiser remover para forçar apenas 10, basta deletar este bloco) -->
-                    <div class="mt-8">
-                        {{ $resultados->links() }}
-                    </div>
                 </div>
             @elseif(isset($resultados) && $resultados->count() == 0)
                 <div id="resultsArea" class="mt-12 bg-white p-12 rounded-2xl text-center border border-gray-100 shadow-sm animate-fade-in-up scroll-mt-24">
