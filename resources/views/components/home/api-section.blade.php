@@ -1,4 +1,4 @@
-<section class="py-24 bg-[#013886] relative overflow-hidden">
+<section class="py-24 bg-[#013886] relative overflow-hidden" id="api-section">
     <!-- Elementos Decorativos de Fundo -->
     <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-[#019171] opacity-20 rounded-full blur-3xl pointer-events-none"></div>
     <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-[#ffd51b] opacity-10 rounded-full blur-3xl pointer-events-none"></div>

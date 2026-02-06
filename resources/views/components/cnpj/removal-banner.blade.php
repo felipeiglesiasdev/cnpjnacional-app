@@ -15,10 +15,9 @@
             </div>
         </div>
 
-        <!-- Link para a futura página (rota placeholder '#') -->
-        <a href="#" class="whitespace-nowrap px-6 py-3 rounded-xl bg-white border border-red-100 text-red-600 font-semibold text-sm hover:bg-red-50 hover:border-red-200 transition-all shadow-sm flex items-center gap-2 group">
-            <i class="bi bi-flag group-hover:scale-110 transition-transform"></i>
-            Solicitar Remoção
+        <a href="{{ route('remocao.show', ['cnpj' => $data['cnpj_limpo'] ?? '']) }}" class="whitespace-nowrap px-6 py-3 rounded-xl bg-white border border-red-100 text-red-600 font-semibold text-sm hover:bg-red-50 hover:border-red-200 transition-all shadow-sm flex items-center gap-2 group text-decoration-none">
+            <i class="bi bi-trash3 group-hover:scale-110 transition-transform"></i>
+            Remover CNPJ
         </a>
 
     </div>

@@ -9,13 +9,25 @@ class SolicitacaoRemocao extends Model
 {
     use HasFactory;
 
+    // Define explicitamente o nome da tabela
     protected $table = 'solicitacoes_remocao';
+
+    // Garante o uso da conexão padrão do Laravel
+    protected $connection = 'mysql'; 
 
     protected $fillable = [
         'cnpj',
-        'nome_responsavel',
-        'confirmou_nao_divulgamos',
-        'ciente_dados_publicos',
-        'ciente_prazo_busca',
+        'razao_social',
+        'ip_solicitante',
+        'user_agent',
+        'aceitou_termos_dados_publicos',
+        'aceitou_termos_google',
+        'removido_em'
+    ];
+
+    protected $casts = [
+        'removido_em' => 'datetime',
+        'aceitou_termos_dados_publicos' => 'boolean',
+        'aceitou_termos_google' => 'boolean',
     ];
 }

@@ -8,4 +8,5 @@
     @include('components.home.advanced-search-preview')
     @include('components.home.api-section')
     @include('components.home.faq')
+    <x-modals.removal-success />
 @endsection

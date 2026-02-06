@@ -1,5 +1,7 @@
 @extends('layouts.app')
-
+@push('seo')
+    <x-cnpj.tags :metaData="$metaData" />
+@endpush
 @section('content')
 <div class="bg-brand-cream min-h-screen py-12">
     <div class="container mx-auto px-4">

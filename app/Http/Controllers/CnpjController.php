@@ -18,12 +18,6 @@ class CnpjController extends Controller
     private function findValidEstabelecimento(string $cnpj): ?Estabelecimento
     {
         $cnpjLimpo = preg_replace('/[^0-9]/', '', $cnpj);
-
-        /*
-        if (SolicitacaoRemocao::where('cnpj', $cnpjLimpo)->exists()) {
-            return null;
-        }*/
-
         $cnpjBase = substr($cnpjLimpo, 0, 8);
         $cnpjOrdem = substr($cnpjLimpo, 8, 4);
         $cnpjDv = substr($cnpjLimpo, 12, 2);
@@ -60,7 +54,7 @@ class CnpjController extends Controller
         else {
             return redirect()->back()
                              ->withInput($request->only('cnpj')) 
-                             ->with('error', 'CNPJ não encontrado em nossa base de dados.');
+                             ->with('error', 'O CNPJ não existe ou não foi encontrado em nossa base.');
         }
     }
     //################################################################################################
@@ -114,29 +108,26 @@ class CnpjController extends Controller
         $nomeMunicipio = $estabelecimento->municipioRel->descricao;                      // NOME MUNICIPIO (MAISCULO)
         $cidadeUf = trim($nomeMunicipio . ' / ' . $estabelecimento->uf);                 // CIDADE / UF
         $empresasSemelhantes = $this->findSimilarCompanies($estabelecimento);            // EMPRESAS SEMELHANTES
-        $structuredData = [
-            '@context' => 'https://schema.org',
-            '@type' => 'Organization',
-            'name' => $empresa->razao_social,
-            'foundingDate' => $estabelecimento->data_inicio_atividade,
-            'legalName' => $empresa->razao_social,
-            'url' => url()->current(),
-            'vatID' => $cnpjApenasNumeros,
+
+
+        // Keywords dinâmicas
+        $keywords = [
+            $cnpjApenasNumeros,
+            $estabelecimento->cnpj_completo_formatado,
+            "cnpj $cnpjApenasNumeros",
+            "cnpj $estabelecimento->cnpj_completo_formatado",
+            strtolower($empresa->razao_social),
+            "consulta cnpj",
+            "consulta cnpj grátis",
+            "consulta cnpj receita federal",
         ];
 
-
+        
         $metaData = [
-            //VIVA ON BENEFICIOS, TECNOLOGIA E SERVICOS LTDA - 57.728.744/0001-44
-            'title' => $empresa->razao_social . ' - CNPJ ' . $this->formatarCnpj($cnpjApenasNumeros),
-            'description' => 'Veja detalhes sobre a empresa ' . $empresa->razao_social . ', inscrita no CNPJ ' . $this->formatarCnpj($cnpjApenasNumeros) .', endereço, atividades e situação cadastral.',
-            'keywords' => implode(', ', array_filter([
-                $cnpjApenasNumeros,
-                $this->formatarCnpj($cnpjApenasNumeros),
-                $empresa->razao_social,
-                $estabelecimento->nome_fantasia,
-                'cnpj ' . $this->formatarCnpj($cnpjApenasNumeros),
-                'consulta cnpj',
-            ]))
+            'title' => "$empresa->razao_social - CNPJ $estabelecimento->cnpj_completo_formatado",
+            'description' => "Consulte o CNPJ $estabelecimento->cnpj_completo_formatado da empresa $empresa->razao_social. Confira dados de situação cadastral, localização, capital social e atividades (CNAEs).",
+            'keywords' => implode(', ', $keywords),
+            'og_url' => "https://www.cnpjnacional.com/cnpj/" . $cnpjApenasNumeros,
         ];
 
         $dadosParaExibir = [
@@ -163,10 +154,8 @@ class CnpjController extends Controller
             'cidade_uf' => $cidadeUf,
             'cidade' => $nomeMunicipio,
             'empresas_semelhantes' => $empresasSemelhantes,
-            'structured_data' => $structuredData,
-            'meta_data' => $metaData
         ];
-        return view('cnpj.cnpj-show', ['data' => $dadosParaExibir]);
+        return view('cnpj.cnpj-show', ['data' => $dadosParaExibir, 'metaData' => $metaData]);
     }
     
     private function findSimilarCompanies(Estabelecimento $estabelecimento): array
