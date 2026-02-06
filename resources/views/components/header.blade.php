@@ -6,7 +6,7 @@
                 <!-- Logo Area -->
                 <div class="flex-shrink-0 flex items-center gap-2">
                     <a href="{{ route('home') }}" class="flex items-center gap-2 group text-decoration-none" title="CNPJ Nacional - Página Inicial">
-                        <img src="{{ asset('images/cnpjnacional.webp') }}" alt="CNPJ Nacional" class="h-12 w-auto transition-transform duration-300 group-hover:scale-105">
+                        <img src="{{ asset('images/cnpjnacional.webp') }}" alt="CNPJ Nacional" class="h-15 w-auto transition-transform duration-300 group-hover:scale-105">
                     </a>
                 </div>
 
@@ -84,7 +84,7 @@
             <div class="flex items-center justify-between">
                 <a href="{{ route('home') }}" class="-m-1.5 p-1.5">
                     <span class="sr-only">CNPJ Nacional</span>
-                    <img class="h-8 w-auto" src="{{ asset('images/cnpjnacional.webp') }}" alt="CNPJ Nacional">
+                    <img class="h-15 w-auto" src="{{ asset('images/cnpjnacional.webp') }}" alt="CNPJ Nacional">
                 </a>
                 <!-- Botão fechar redundante (o do header tbm funciona, mas este fica dentro do painel) -->
                 <button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700 hover:text-[#013886]" @click="mobileMenuOpen = false">
