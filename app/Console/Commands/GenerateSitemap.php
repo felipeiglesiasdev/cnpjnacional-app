@@ -44,7 +44,8 @@ class GenerateSitemap extends Command
         // 2. Configurações
         // Norte + Nordeste
         $estadosAlvo = [
-            'AC'
+            'AC', 'AP', 'AM', 'PA', 'RO', 'RR', 'TO', // Norte
+            'AL', 'BA', 'CE', 'MA', 'PB', 'PE', 'PI', 'RN', 'SE' // Nordeste
         ];
         
         $limitPerFile = 50000; 
