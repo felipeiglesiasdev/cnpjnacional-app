@@ -19,7 +19,7 @@
             <div class="h-2 bg-gray-100 rounded w-1/2"></div>
         </div>
 
-        <a href="#" class="w-full flex items-center justify-center gap-2 bg-[#019171] text-white font-bold py-3 rounded-xl hover:bg-[#017a5f] transition-colors shadow-lg shadow-green-100">
+        <a href="{{ route('consulta_avancada.index') }}" class="w-full flex items-center justify-center gap-2 bg-[#019171] text-white font-bold py-3 rounded-xl hover:bg-[#017a5f] transition-colors shadow-lg shadow-green-100">
             <i class="bi bi-funnel-fill text-sm text-[#ffd51b]"></i> Segmentar Agora
         </a>
     </div>
