@@ -28,9 +28,9 @@ class GenerateSitemap extends Command
      */
     public function handle()
     {
-        // AJUSTE DE PERFORMANCE CRÍTICO
-        ini_set('memory_limit', '2G'); // Aumenta limite para 2GB
-        DB::disableQueryLog(); // Desabilita log de queries para economizar RAM
+        // OTIMIZAÇÃO DE MEMÓRIA
+        ini_set('memory_limit', '2G'); 
+        DB::disableQueryLog(); 
 
         $this->info('Iniciando geração de Sitemaps (Regiões Norte e Nordeste)...');
 
@@ -44,11 +44,10 @@ class GenerateSitemap extends Command
         // 2. Configurações
         // Norte + Nordeste
         $estadosAlvo = [
-            'AC', 'AP', 'AM', 'PA', 'RO', 'RR', 'TO', // Norte
-            'AL', 'BA', 'CE', 'MA', 'PB', 'PE', 'PI', 'RN', 'SE' // Nordeste
+            'AC'
         ];
         
-        $limitPerFile = 50000; // 50.000 URLs por arquivo
+        $limitPerFile = 50000; 
         $currentFileNumber = 1;
         $urlBuffer = [];
         $baseUrl = 'https://www.cnpjnacional.com';
@@ -56,7 +55,6 @@ class GenerateSitemap extends Command
         // 3. Contagem Total para Barra de Progresso
         $this->info('Contando total de empresas para processar...');
         
-        // Count direto no banco é leve
         $totalEmpresas = Estabelecimento::whereIn('uf', $estadosAlvo)
             ->where('situacao_cadastral', '02')
             ->count();
@@ -73,56 +71,52 @@ class GenerateSitemap extends Command
         $bar->start();
 
         // 4. Query Otimizada com Cursor e toBase()
-        // toBase() retorna stdClass em vez de Models Eloquent (Muito mais leve)
         $query = Estabelecimento::select('cnpj_basico', 'cnpj_ordem', 'cnpj_dv')
             ->whereIn('uf', $estadosAlvo)
             ->where('situacao_cadastral', '02')
             ->toBase(); 
 
+        // DATA PADRÃO (AAAA-MM-DD)
+        $dataPadrao = date('Y-m-d');
+
         foreach ($query->cursor() as $empresa) {
             $cnpj = $empresa->cnpj_basico . $empresa->cnpj_ordem . $empresa->cnpj_dv;
             
-            // Monta a URL manual
+            // Monta a URL
             $loc = "{$baseUrl}/cnpj/{$cnpj}";
-            // Lastmod definido como a data atual (hoje)
-            $lastmod = date('c'); 
+            
+            // Adiciona ao buffer com a data formatada
+            $urlBuffer[] = $this->formatUrlTag($loc, $dataPadrao);
 
-            // Adiciona ao buffer
-            $urlBuffer[] = $this->formatUrlTag($loc, $lastmod);
-
-            // Avança a barra de progresso
             $bar->advance();
 
-            // Se encheu o arquivo (50.000), salva e reseta
+            // Se encheu o arquivo, salva e reseta
             if (count($urlBuffer) >= $limitPerFile) {
-                // Pausa a barra para imprimir log limpo
                 $bar->clear(); 
                 $this->saveSitemapFile($sitemapDir, $currentFileNumber, $urlBuffer);
-                $bar->display(); // Restaura a barra
+                $bar->display(); 
 
-                $urlBuffer = []; // Limpa memória
+                $urlBuffer = []; 
                 $currentFileNumber++;
                 
-                // Força coleta de lixo do PHP para liberar memória
                 gc_collect_cycles();
             }
         }
 
-        // Salva o restante que sobrou no buffer
+        // Salva o restante
         if (!empty($urlBuffer)) {
             $bar->clear();
             $this->saveSitemapFile($sitemapDir, $currentFileNumber, $urlBuffer);
             $bar->display();
         } else {
-            // Se terminou exato e incrementou, volta um para o index ficar correto
             $currentFileNumber--; 
         }
 
         $bar->finish();
-        $this->newLine(); // Pula linha após a barra terminar
+        $this->newLine();
 
         // 5. Gera o Sitemap Index
-        $this->generateSitemapIndex($currentFileNumber, $baseUrl);
+        $this->generateSitemapIndex($currentFileNumber, $baseUrl, $dataPadrao);
 
         $this->info("CONCLUÍDO!");
         $this->info("Arquivos gerados em: {$sitemapDir}");
@@ -147,7 +141,7 @@ class GenerateSitemap extends Command
     /**
      * Gera o arquivo sitemap_index.xml na raiz do public
      */
-    private function generateSitemapIndex($totalFiles, $baseUrl)
+    private function generateSitemapIndex($totalFiles, $baseUrl, $lastmod)
     {
         $content = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
         $content .= '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
@@ -155,7 +149,7 @@ class GenerateSitemap extends Command
         for ($i = 1; $i <= $totalFiles; $i++) {
             $content .= "  <sitemap>" . PHP_EOL;
             $content .= "    <loc>{$baseUrl}/sitemaps/sitemap_{$i}.xml</loc>" . PHP_EOL;
-            $content .= "    <lastmod>" . date('c') . "</lastmod>" . PHP_EOL;
+            $content .= "    <lastmod>{$lastmod}</lastmod>" . PHP_EOL;
             $content .= "  </sitemap>" . PHP_EOL;
         }
 
@@ -170,10 +164,11 @@ class GenerateSitemap extends Command
      */
     private function formatUrlTag($loc, $lastmod)
     {
+        // Formatado AAAA-MM-DD e frequency monthly
         return "  <url>
     <loc>{$loc}</loc>
     <lastmod>{$lastmod}</lastmod>
-    <changefreq>weekly</changefreq>
+    <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>";
     }

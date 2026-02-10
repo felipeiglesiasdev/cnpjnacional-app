@@ -22,7 +22,6 @@
                 <x-cnpj.similar-companies :data="$data" />
             </div>
             <div class="lg:col-span-4 space-y-6 sticky top-24 self-start">
-                <x-cnpj.sidebar.api-banner />
                 <x-cnpj.sidebar.advanced-banner />
             </div>
         </div>

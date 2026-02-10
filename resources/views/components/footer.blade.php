@@ -6,7 +6,7 @@
             <!-- Coluna 1: Marca e Missão -->
             <div class="md:col-span-1">
                 <div class="flex items-center gap-2 mb-4">
-                    <img src="{{ asset('images/cnpjnacional.webp') }}" alt="CNPJ Nacional" class="h-22 w-auto">
+                    <img src="{{ asset('images/cnpjnacional.webp') }}" alt="CNPJ Nacional" class="h-15 w-auto">
                 </div>
                 <p class="text-sm text-gray-500 leading-relaxed mb-6 font-light">
                     Facilitamos o acesso a dados públicos de empresas brasileiras com tecnologia e transparência.
@@ -57,12 +57,6 @@
                     </li>
                     <li>
                         <a href="{{ route('politica_privacidade') }}" class="hover:text-[#019171] transition-colors">Termos de Uso</a>
-                    </li>
-                    <li>
-                        <!-- Link para API (Âncora para a seção de API na Home) -->
-                        <a href="{{ route('home') }}#api-section" class="hover:text-[#019171] transition-colors flex items-center gap-2">
-                            <i class="bi bi-code-square text-gray-300"></i> API para Desenvolvedores
-                        </a>
                     </li>
                 </ul>
             </div>

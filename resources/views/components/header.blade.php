@@ -22,12 +22,6 @@
                        title="Realizar Consulta Avançada de Empresas">
                         Consulta Avançada
                     </a>
-                    <!-- Link API -->
-                    <a href="{{ route('home') }}#api-section" 
-                       class="text-[#232323] hover:text-[#013886] font-medium transition-all duration-300 text-decoration-none uppercase text-sm tracking-wide hover:-translate-y-0.5"
-                       title="Documentação da API">
-                        API
-                    </a>
                 </div>
 
                 <!-- Mobile Menu Button (Hamburger) -->
@@ -53,7 +47,6 @@
     </nav>
 
     <!-- Mobile Menu (Off-canvas / Gaveta) -->
-    <!-- Removido x-teleport para evitar problemas de contexto -->
     <div class="md:hidden" 
             role="dialog" 
             aria-modal="true"
@@ -86,7 +79,7 @@
                     <span class="sr-only">CNPJ Nacional</span>
                     <img class="h-15 w-auto" src="{{ asset('images/cnpjnacional.webp') }}" alt="CNPJ Nacional">
                 </a>
-                <!-- Botão fechar redundante (o do header tbm funciona, mas este fica dentro do painel) -->
+                <!-- Botão fechar redundante -->
                 <button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700 hover:text-[#013886]" @click="mobileMenuOpen = false">
                     <span class="sr-only">Fechar menu</span>
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
@@ -107,11 +100,6 @@
                             class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 hover:text-[#013886] transition-colors"
                             @click="mobileMenuOpen = false">
                             Consulta Avançada
-                        </a>
-                        <a href="{{ route('home') }}#api-section" 
-                            class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 hover:text-[#013886] transition-colors"
-                            @click="mobileMenuOpen = false">
-                            API
                         </a>
                         <a href="{{ route('politica_privacidade') }}" 
                             class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 hover:text-[#013886] transition-colors"
