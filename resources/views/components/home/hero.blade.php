@@ -33,26 +33,30 @@
                     A maneira mais simples de <strong>consultar empresas grátis</strong>. Acesse dados essenciais como Capital Social, Atividades Econômicas e localização (Cidade/Estado) em tempo real.
                 </p>
 
-                <!-- Ícones de features rápidas (Agora com Bootstrap Icons) -->
-                <div class="flex flex-col sm:flex-row flex-wrap gap-6 text-white/80 text-sm font-medium">
-                    <div class="flex items-center gap-3 group">
-                        <div class="w-10 h-10 rounded-xl bg-[#ffffff10] border border-[#ffffff20] flex items-center justify-center text-[#ffd51b] group-hover:scale-110 transition-transform">
+                <!-- Ícones de features rápidas (Bootstrap Icons) - AJUSTE MOBILE AQUI -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 text-white/80 text-sm font-medium">
+                    
+                    <div class="flex items-center gap-3 group bg-white/5 p-3 rounded-xl border border-white/10 sm:bg-transparent sm:p-0 sm:border-0">
+                        <div class="w-10 h-10 rounded-xl bg-[#ffffff10] border border-[#ffffff20] flex items-center justify-center text-[#ffd51b] group-hover:scale-110 transition-transform flex-shrink-0">
                             <i class="bi bi-shield-check text-xl"></i>
                         </div>
-                        <span>Dados Públicos<br>Oficiais</span>
+                        <span class="leading-tight">Dados Públicos<br>Oficiais</span>
                     </div>
-                    <div class="flex items-center gap-3 group">
-                        <div class="w-10 h-10 rounded-xl bg-[#ffffff10] border border-[#ffffff20] flex items-center justify-center text-[#ffd51b] group-hover:scale-110 transition-transform">
+
+                    <div class="flex items-center gap-3 group bg-white/5 p-3 rounded-xl border border-white/10 sm:bg-transparent sm:p-0 sm:border-0">
+                        <div class="w-10 h-10 rounded-xl bg-[#ffffff10] border border-[#ffffff20] flex items-center justify-center text-[#ffd51b] group-hover:scale-110 transition-transform flex-shrink-0">
                             <i class="bi bi-lightning-charge text-xl"></i>
                         </div>
-                        <span>Consulta CNPJ<br>Rápida</span>
+                        <span class="leading-tight">Consulta CNPJ<br>Rápida</span>
                     </div>
-                    <div class="flex items-center gap-3 group">
-                        <div class="w-10 h-10 rounded-xl bg-[#ffffff10] border border-[#ffffff20] flex items-center justify-center text-[#ffd51b] group-hover:scale-110 transition-transform">
+
+                    <div class="flex items-center gap-3 group bg-white/5 p-3 rounded-xl border border-white/10 sm:bg-transparent sm:p-0 sm:border-0">
+                        <div class="w-10 h-10 rounded-xl bg-[#ffffff10] border border-[#ffffff20] flex items-center justify-center text-[#ffd51b] group-hover:scale-110 transition-transform flex-shrink-0">
                             <i class="bi bi-infinity text-xl"></i>
                         </div>
-                        <span>Buscas<br>Ilimitadas</span>
+                        <span class="leading-tight">Buscas<br>Ilimitadas</span>
                     </div>
+
                 </div>
             </div>
 
