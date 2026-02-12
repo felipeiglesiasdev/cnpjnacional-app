@@ -9,89 +9,67 @@ use App\Models\Estabelecimento;
 
 class GenerateSitemap extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'sitemap:generate';
+    protected $description = 'Gera sitemaps ultraleves em XML puro para a região Norte/Nordeste';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Gera sitemaps em massa para empresas das regiões Norte e Nordeste em public/sitemaps';
-
-    /**
-     * Execute the console command.
-     */
     public function handle()
     {
-        // OTIMIZAÇÃO DE MEMÓRIA
+        // OTIMIZAÇÃO DE MEMÓRIA CRÍTICA
         ini_set('memory_limit', '2G'); 
         DB::disableQueryLog(); 
 
-        $this->info('Iniciando geração de Sitemaps (Regiões Norte e Nordeste)...');
+        $this->info('Iniciando geração de Sitemaps Ultraleves (XML)...');
 
-        // 1. Prepara o diretório
         $sitemapDir = public_path('sitemaps');
         if (!File::exists($sitemapDir)) {
             File::makeDirectory($sitemapDir, 0755, true);
-            $this->info('Diretório public/sitemaps criado.');
         }
 
-        // 2. Configurações
-        // Norte + Nordeste
+        // Limpa sitemaps antigos para não acumular lixo caso o número de arquivos diminua/aumente
+        File::cleanDirectory($sitemapDir);
+
         $estadosAlvo = [
             'AC', 'AP', 'AM', 'PA', 'RO', 'RR', 'TO', // Norte
             'AL', 'BA', 'CE', 'MA', 'PB', 'PE', 'PI', 'RN', 'SE' // Nordeste
         ];
         
+        // REDUZIDO PARA 15.000: Arquivos menores são lidos muito mais rápido pelo Googlebot
         $limitPerFile = 50000; 
         $currentFileNumber = 1;
         $urlBuffer = [];
         $baseUrl = 'https://www.cnpjnacional.com';
 
-        // 3. Contagem Total para Barra de Progresso
-        $this->info('Contando total de empresas para processar...');
-        
+        $this->info('Contando total de empresas...');
         $totalEmpresas = Estabelecimento::whereIn('uf', $estadosAlvo)
             ->where('situacao_cadastral', '02')
             ->count();
 
-        $this->info("Total de empresas encontradas: {$totalEmpresas}");
+        $this->info("Total de empresas: {$totalEmpresas}");
         
         if ($totalEmpresas === 0) {
-            $this->error('Nenhuma empresa encontrada com os critérios selecionados.');
+            $this->error('Nenhuma empresa encontrada.');
             return;
         }
 
-        // Inicia a barra de progresso
         $bar = $this->output->createProgressBar($totalEmpresas);
         $bar->start();
 
-        // 4. Query Otimizada com Cursor e toBase()
         $query = Estabelecimento::select('cnpj_basico', 'cnpj_ordem', 'cnpj_dv')
             ->whereIn('uf', $estadosAlvo)
             ->where('situacao_cadastral', '02')
             ->toBase(); 
 
-        // DATA PADRÃO (AAAA-MM-DD)
         $dataPadrao = date('Y-m-d');
 
         foreach ($query->cursor() as $empresa) {
             $cnpj = $empresa->cnpj_basico . $empresa->cnpj_ordem . $empresa->cnpj_dv;
-            
-            // Monta a URL
             $loc = "{$baseUrl}/cnpj/{$cnpj}";
             
-            // Adiciona ao buffer com a data formatada
+            // Adiciona a string minificada ao array
             $urlBuffer[] = $this->formatUrlTag($loc, $dataPadrao);
 
             $bar->advance();
 
-            // Se encheu o arquivo, salva e reseta
             if (count($urlBuffer) >= $limitPerFile) {
                 $bar->clear(); 
                 $this->saveSitemapFile($sitemapDir, $currentFileNumber, $urlBuffer);
@@ -100,11 +78,10 @@ class GenerateSitemap extends Command
                 $urlBuffer = []; 
                 $currentFileNumber++;
                 
-                gc_collect_cycles();
+                gc_collect_cycles(); 
             }
         }
 
-        // Salva o restante
         if (!empty($urlBuffer)) {
             $bar->clear();
             $this->saveSitemapFile($sitemapDir, $currentFileNumber, $urlBuffer);
@@ -116,61 +93,47 @@ class GenerateSitemap extends Command
         $bar->finish();
         $this->newLine();
 
-        // 5. Gera o Sitemap Index
         $this->generateSitemapIndex($currentFileNumber, $baseUrl, $dataPadrao);
 
-        $this->info("CONCLUÍDO!");
-        $this->info("Arquivos gerados em: {$sitemapDir}");
-        $this->info("Index gerado em: public/sitemap_index.xml");
+        $this->info("CONCLUÍDO! Sitemaps ultraleves gerados com sucesso.");
     }
 
-    /**
-     * Salva um arquivo sitemap_X.xml
-     */
     private function saveSitemapFile($dir, $number, $urls)
     {
         $filename = "sitemap_{$number}.xml";
-        $content = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
-        $content .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
-        $content .= implode(PHP_EOL, $urls) . PHP_EOL;
+        
+        // Monta o XML de forma compacta (sem espaços sobrando)
+        $content = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+        $content .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+        // Implode usando apenas uma quebra de linha simples
+        $content .= implode("\n", $urls) . "\n";
         $content .= '</urlset>';
 
+        // Salva diretamente o conteúdo em texto puro sem compressão
         File::put("{$dir}/{$filename}", $content);
-        $this->info("Arquivo gerado: {$filename} (" . count($urls) . " URLs)");
+        $this->info("Arquivo gerado: {$filename}");
     }
 
-    /**
-     * Gera o arquivo sitemap_index.xml na raiz do public
-     */
     private function generateSitemapIndex($totalFiles, $baseUrl, $lastmod)
     {
-        $content = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
-        $content .= '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
+        $content = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+        $content .= '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
 
         for ($i = 1; $i <= $totalFiles; $i++) {
-            $content .= "  <sitemap>" . PHP_EOL;
-            $content .= "    <loc>{$baseUrl}/sitemaps/sitemap_{$i}.xml</loc>" . PHP_EOL;
-            $content .= "    <lastmod>{$lastmod}</lastmod>" . PHP_EOL;
-            $content .= "  </sitemap>" . PHP_EOL;
+            $content .= "<sitemap><loc>{$baseUrl}/sitemaps/sitemap_{$i}.xml</loc><lastmod>{$lastmod}</lastmod></sitemap>\n";
         }
 
         $content .= '</sitemapindex>';
 
         File::put(public_path('sitemap_index.xml'), $content);
-        $this->info("Sitemap Index gerado com {$totalFiles} sitemaps listados.");
     }
 
     /**
-     * Formata uma tag <url> individual
+     * formatação extrema: apenas o que o google realmente usa.
      */
     private function formatUrlTag($loc, $lastmod)
     {
-        // Formatado AAAA-MM-DD e frequency monthly
-        return "  <url>
-    <loc>{$loc}</loc>
-    <lastmod>{$lastmod}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>";
+        // Sem changefreq, sem priority, sem espaços. Puro e direto.
+        return "<url><loc>{$loc}</loc><lastmod>{$lastmod}</lastmod></url>";
     }
 }
