@@ -1,32 +1,40 @@
-<?php // INÍCIO DO ARQUIVO PHP
+<?php
 
-namespace App\Models; // NAMESPACE DO MODEL
+// NAMESPACE DO MODEL
+namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model; // CLASSE BASE DO ELOQUENT
-use Illuminate\Database\Eloquent\Relations\HasMany; // TIPO DE RELACIONAMENTO
+// IMPORTACAO DA CLASSE ELOQUENT MODEL
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Pais extends Model // DEFINIÇÃO DA CLASSE PAIS
+// DECLARACAO DA CLASSE PAIS
+class Pais extends Model
 {
+    // DEFINICAO DA CONEXAO ESPECIFICA SOLICITADA
     protected $connection = 'mysql_dados';
-    protected $table = 'paises'; // NOME DA TABELA
-    protected $primaryKey = 'codigo'; // CHAVE PRIMÁRIA
-    public $incrementing = false; // CHAVE PRIMÁRIA NÃO É AUTOINCREMENTAL
-    public $timestamps = false; // DESATIVA TIMESTAMPS
 
-    protected $fillable = [ // ATRIBUTOS PREENCHÍVEIS
-        'codigo', // COLUNA
-        'descricao', // COLUNA
-    ]; // FIM DO ARRAY
+    // NOME EXATO DA TABELA CONFORME O SQL
+    protected $table = 'paises';
 
-    // RELACIONAMENTO 1-N
-    public function estabelecimentos(): HasMany
-    {
-        return $this->hasMany(Estabelecimento::class, 'pais', 'codigo'); // RETORNA O RELACIONAMENTO
-    }
+    // DEFINICAO DA CHAVE PRIMARIA (CODIGO)
+    protected $primaryKey = 'codigo';
 
-    // RELACIONAMENTO 1-N
+    // DESATIVACAO DO AUTO INCREMENTO POIS O SQL NAO POSSUI AUTO_INCREMENT
+    public $incrementing = false;
+
+    // DESATIVACAO DOS TIMESTAMPS POIS NAO EXISTEM NA TABELA
+    public $timestamps = false;
+
+    // ATRIBUTOS QUE PODEM SER PREENCHIDOS EM MASSA
+    protected $fillable = [
+        'codigo',
+        'descricao'
+    ];
+
+    // RELACIONAMENTO INVERSO BASEADO NA CONSTRAINT: fk_socios_pais
     public function socios(): HasMany
     {
-        return $this->hasMany(Socio::class, 'pais', 'codigo'); // RETORNA O RELACIONAMENTO
+        // POSSUI MUITOS SOCIOS VINCULADOS A ESTE PAIS
+        return $this->hasMany(Socio::class, 'pais', 'codigo');
     }
 }

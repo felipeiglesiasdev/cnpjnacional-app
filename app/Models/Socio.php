@@ -1,51 +1,68 @@
-<?php // INÍCIO DO ARQUIVO PHP
+<?php
 
-namespace App\Models; // NAMESPACE DO MODEL
+// NAMESPACE DO MODEL
+namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model; // CLASSE BASE DO ELOQUENT
-use Illuminate\Database\Eloquent\Relations\BelongsTo; // TIPO DE RELACIONAMENTO
+// IMPORTACAO DA CLASSE ELOQUENT MODEL
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Socio extends Model // DEFINIÇÃO DA CLASSE SOCIO
+// DECLARACAO DA CLASSE SOCIO
+class Socio extends Model
 {
+    // DEFINICAO DA CONEXAO ESPECIFICA SOLICITADA
     protected $connection = 'mysql_dados';
-    protected $table = 'socios'; // NOME DA TABELA
-    public $timestamps = false; // DESATIVA TIMESTAMPS
 
-    protected $fillable = [ // ATRIBUTOS PREENCHÍVEIS
-        'cnpj_basico', // COLUNA
-        'identificador_socio', // COLUNA
-        'nome_socio', // COLUNA
-        'cnpj_cpf_socio', // COLUNA
-        'qualificacao_socio', // COLUNA
-        'data_entrada_sociedade', // COLUNA
-        'pais', // COLUNA
-        'representante_legal', // COLUNA
-        'nome_representante', // COLUNA
-        'qualificacao_representante_legal', // COLUNA
-        'faixa_etaria', // COLUNA
-    ]; // FIM DO ARRAY
+    // NOME EXATO DA TABELA CONFORME O SQL
+    protected $table = 'socios';
 
-    // RELACIONAMENTO N-1
-    public function empresa(): BelongsTo
+    // CHAVE PRIMARIA COMPOSTA CONFORME SQL (CNPJ_BASICO, CNPJ_CPF_SOCIO)
+    protected $primaryKey = ['cnpj_basico', 'cnpj_cpf_socio'];
+
+    // DESATIVACAO DO AUTO INCREMENTO DEVIDO A CHAVE COMPOSTA
+    public $incrementing = false;
+
+    // DESATIVACAO DOS TIMESTAMPS POIS NAO EXISTEM NA TABELA
+    public $timestamps = false;
+
+    // ATRIBUTOS QUE PODEM SER PREENCHIDOS EM MASSA
+    protected $fillable = [
+        'cnpj_basico',
+        'identificador_socio',
+        'nome_socio',
+        'cnpj_cpf_socio',
+        'qualificacao_socio',
+        'data_entrada_sociedade',
+        'pais',
+        'representante_legal',
+        'nome_representante',
+        'qualificacao_representante_legal',
+        'faixa_etaria'
+    ];
+
+    // RELACIONAMENTO BASEADO NA CONSTRAINT: fk_socios_empresa
+    public function empresa(): belongsTo
     {
-        return $this->belongsTo(Empresa::class, 'cnpj_basico', 'cnpj_basico'); // RETORNA O RELACIONAMENTO
+        // PERTENCE A UMA EMPRESA
+        return $this->belongsTo(Empresa::class, 'cnpj_basico', 'cnpj_basico');
     }
 
-    // RELACIONAMENTO N-1
-    public function qualificacao(): BelongsTo
+    // RELACIONAMENTO BASEADO NA CONSTRAINT: fk_socios_pais
+    public function paisRel(): belongsTo
     {
-        return $this->belongsTo(QualificacaoSocio::class, 'qualificacao_socio', 'codigo'); // RETORNA O RELACIONAMENTO
+        // PERTENCE A UM PAIS
+        return $this->belongsTo(Pais::class, 'pais', 'codigo');
     }
 
-    // RELACIONAMENTO N-1
-    public function qualificacaoRepresentante(): BelongsTo
+    // RELACIONAMENTO BASEADO NA CONSTRAINT: fk_socios_qualificacao
+    public function qualificacaoSocioRel(): belongsTo
     {
-        return $this->belongsTo(QualificacaoSocio::class, 'qualificacao_representante_legal', 'codigo'); // RETORNA O RELACIONAMENTO
+        // PERTENCE A UMA QUALIFICACAO
+        return $this->belongsTo(Qualificacao::class, 'qualificacao_socio', 'codigo');
     }
 
-    // RELACIONAMENTO N-1
-    public function paisRel(): BelongsTo
-    {
-        return $this->belongsTo(Pais::class, 'pais', 'codigo'); // RETORNA O RELACIONAMENTO
-    }
+    // AVISO IMPORTANTE:
+    // A COLUNA QUALIFICACAO_REPRESENTANTE_LEGAL EXISTE NA TABELA
+    // POREM, NAO EXISTE NENHUMA CONSTRAINT DEFININDO-A COMO FOREIGN KEY NO SQL FORNECIDO
+    // PORTANTO, NAO DECLAREI O RELACIONAMENTO AQUI PARA MANTER FIDELIDADE AO SCHEMA
 }

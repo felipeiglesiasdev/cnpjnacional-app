@@ -7,14 +7,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-// DECLARACAO DA CLASSE NATUREZA JURIDICA
-class NaturezaJuridica extends Model
+
+// DECLARACAO DA CLASSE QUALIFICACAO
+class Qualificacao extends Model
 {
     // DEFINICAO DA CONEXAO ESPECIFICA SOLICITADA
     protected $connection = 'mysql_dados';
 
     // NOME EXATO DA TABELA CONFORME O SQL
-    protected $table = 'naturezas_juridicas';
+    protected $table = 'qualificacoes';
 
     // DEFINICAO DA CHAVE PRIMARIA (CODIGO)
     protected $primaryKey = 'codigo';
@@ -31,10 +32,17 @@ class NaturezaJuridica extends Model
         'descricao'
     ];
 
-    // RELACIONAMENTO INVERSO BASEADO NA CONSTRAINT: empresas_ibfk_1
+    // RELACIONAMENTO INVERSO BASEADO NA CONSTRAINT: empresas_ibfk_2
     public function empresas(): HasMany
     {
-        // POSSUI MUITAS EMPRESAS VINCULADAS A ESTA NATUREZA JURIDICA
-        return $this->hasMany(Empresa::class, 'natureza_juridica', 'codigo');
+        // POSSUI MUITAS EMPRESAS VINCULADAS A ESTA QUALIFICACAO DO RESPONSAVEL
+        return $this->hasMany(Empresa::class, 'qualificacao_responsavel', 'codigo');
+    }
+
+    // RELACIONAMENTO INVERSO BASEADO NA CONSTRAINT: fk_socios_qualificacao
+    public function socios(): HasMany
+    {
+        // POSSUI MUITOS SOCIOS VINCULADOS A ESTA QUALIFICACAO
+        return $this->hasMany(Socio::class, 'qualificacao_socio', 'codigo');
     }
 }

@@ -1,58 +1,71 @@
-<?php // INÍCIO DO ARQUIVO PHP
+<?php
 
-namespace App\Models; // NAMESPACE DO MODEL
+// NAMESPACE DO MODEL
+namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model; // CLASSE BASE DO ELOQUENT
-use Illuminate\Database\Eloquent\Relations\HasMany; // TIPO DE RELACIONAMENTO
-use Illuminate\Database\Eloquent\Relations\HasOne; // TIPO DE RELACIONAMENTO
-use Illuminate\Database\Eloquent\Relations\BelongsTo; // TIPO DE RELACIONAMENTO
+// IMPORTACAO DA CLASSE ELOQUENT MODEL
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Empresa extends Model // DEFINIÇÃO DA CLASSE EMPRESA
+// DECLARACAO DA CLASSE EMPRESA
+class Empresa extends Model
 {
+    // DEFINICAO DA CONEXAO ESPECIFICA SOLICITADA
     protected $connection = 'mysql_dados';
-    protected $table = 'empresas'; // NOME DA TABELA
-    protected $primaryKey = 'cnpj_basico'; // CHAVE PRIMÁRIA
-    protected $keyType = 'string'; // TIPO DA CHAVE PRIMÁRIA
-    public $incrementing = false; // CHAVE PRIMÁRIA NÃO É AUTOINCREMENTAL
-    public $timestamps = false; // DESATIVA TIMESTAMPS
 
-    protected $fillable = [ // ATRIBUTOS PREENCHÍVEIS
-        'cnpj_basico', // COLUNA
-        'razao_social', // COLUNA
-        'natureza_juridica', // COLUNA
-        'qualificacao_responsavel', // COLUNA
-        'capital_social', // COLUNA
-        'porte_empresa', // COLUNA
-        'ente_federativo_responsavel', // COLUNA
-    ]; // FIM DO ARRAY
+    // NOME EXATO DA TABELA CONFORME O SQL
+    protected $table = 'empresas';
 
-    // RELACIONAMENTO 1-N
-    public function estabelecimentos(): HasMany
+    // DEFINICAO DA CHAVE PRIMARIA (CNPJ_BASICO)
+    protected $primaryKey = 'cnpj_basico';
+
+    // DEFINICAO DO TIPO DA CHAVE PRIMARIA COMO STRING (CHAR 8)
+    protected $keyType = 'string';
+
+    // DESATIVACAO DO AUTO INCREMENTO POIS A CHAVE NAO E NUMERICA
+    public $incrementing = false;
+
+    // DESATIVACAO DOS TIMESTAMPS POIS NAO EXISTEM NA TABELA
+    public $timestamps = false;
+
+    // ATRIBUTOS QUE PODEM SER PREENCHIDOS EM MASSA
+    protected $fillable = [
+        'cnpj_basico',
+        'razao_social',
+        'natureza_juridica',
+        'qualificacao_responsavel',
+        'capital_social',
+        'porte_empresa',
+        'ente_federativo_responsavel'
+    ];
+
+    // RELACIONAMENTO BASEADO NA CONSTRAINT: empresas_ibfk_1
+    public function naturezaJuridicaRel(): BelongsTo
     {
-        return $this->hasMany(Estabelecimento::class, 'cnpj_basico', 'cnpj_basico'); // RETORNA O RELACIONAMENTO
+        // PERTENCE A UMA NATUREZA JURIDICA
+        return $this->belongsTo(NaturezaJuridica::class, 'natureza_juridica', 'codigo');
     }
 
-    // RELACIONAMENTO 1-1
+    // RELACIONAMENTO BASEADO NA CONSTRAINT: empresas_ibfk_2
+    public function qualificacaoResponsavelRel(): BelongsTo
+    {
+        // PERTENCE A UMA QUALIFICACAO
+        return $this->belongsTo(Qualificacao::class, 'qualificacao_responsavel', 'codigo');
+    }
+
+    // RELACIONAMENTO INVERSO BASEADO NA CONSTRAINT: fk_simples_empresa
     public function simples(): HasOne
     {
-        return $this->hasOne(Simples::class, 'cnpj_basico', 'cnpj_basico'); // RETORNA O RELACIONAMENTO
+        // POSSUI UM REGISTRO NA TABELA SIMPLES
+        return $this->hasOne(Simples::class, 'cnpj_basico', 'cnpj_basico');
     }
 
-    // RELACIONAMENTO 1-N
+    // RELACIONAMENTO INVERSO BASEADO NA CONSTRAINT: fk_socios_empresa
     public function socios(): HasMany
     {
-        return $this->hasMany(Socio::class, 'cnpj_basico', 'cnpj_basico'); // RETORNA O RELACIONAMENTO
-    }
-
-    // RELACIONAMENTO N-1
-    public function naturezaJuridica(): BelongsTo
-    {
-        return $this->belongsTo(NaturezaJuridica::class, 'natureza_juridica', 'codigo'); // RETORNA O RELACIONAMENTO
-    }
-
-    // RELACIONAMENTO N-1
-    public function qualificacaoResponsavel(): BelongsTo
-    {
-        return $this->belongsTo(QualificacaoSocio::class, 'qualificacao_responsavel', 'codigo'); // RETORNA O RELACIONAMENTO
+        // POSSUI MUITOS REGISTROS NA TABELA SOCIOS
+        return $this->hasMany(Socio::class, 'cnpj_basico', 'cnpj_basico');
     }
 }

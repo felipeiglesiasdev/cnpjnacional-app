@@ -1,32 +1,48 @@
-<?php // INÍCIO DO ARQUIVO PHP
+<?php
 
-namespace App\Models; // NAMESPACE DO MODEL
+// NAMESPACE DO MODEL
+namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model; // CLASSE BASE DO ELOQUENT
-use Illuminate\Database\Eloquent\Relations\BelongsTo; // TIPO DE RELACIONAMENTO
+// IMPORTACAO DA CLASSE ELOQUENT MODEL
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Simples extends Model // DEFINIÇÃO DA CLASSE SIMPLES
+// DECLARACAO DA CLASSE SIMPLES
+class Simples extends Model
 {
+    // DEFINICAO DA CONEXAO ESPECIFICA SOLICITADA
     protected $connection = 'mysql_dados';
-    protected $table = 'simples'; // NOME DA TABELA
-    protected $primaryKey = 'cnpj_basico'; // CHAVE PRIMÁRIA
-    protected $keyType = 'string'; // TIPO DA CHAVE PRIMÁRIA
-    public $incrementing = false; // CHAVE PRIMÁRIA NÃO É AUTOINCREMENTAL
-    public $timestamps = false; // DESATIVA TIMESTAMPS
 
-    protected $fillable = [ // ATRIBUTOS PREENCHÍVEIS
-        'cnpj_basico', // COLUNA
-        'opcao_pelo_simples', // COLUNA
-        'data_opcao_pelo_simples', // COLUNA
-        'data_exclusao_do_simples', // COLUNA
-        'opcao_pelo_mei', // COLUNA
-        'data_opcao_pelo_mei', // COLUNA
-        'data_exclusao_do_mei', // COLUNA
-    ]; // FIM DO ARRAY
+    // NOME EXATO DA TABELA CONFORME O SQL
+    protected $table = 'simples';
 
-    // RELACIONAMENTO N-1
+    // DEFINICAO DA CHAVE PRIMARIA (CNPJ_BASICO)
+    protected $primaryKey = 'cnpj_basico';
+
+    // DEFINICAO DO TIPO DA CHAVE PRIMARIA COMO STRING (CHAR 8)
+    protected $keyType = 'string';
+
+    // DESATIVACAO DO AUTO INCREMENTO POIS A CHAVE NAO E NUMERICA
+    public $incrementing = false;
+
+    // DESATIVACAO DOS TIMESTAMPS POIS NAO EXISTEM NA TABELA
+    public $timestamps = false;
+
+    // ATRIBUTOS QUE PODEM SER PREENCHIDOS EM MASSA
+    protected $fillable = [
+        'cnpj_basico',
+        'opcao_pelo_simples',
+        'data_opcao_pelo_simples',
+        'data_exclusao_do_simples',
+        'opcao_pelo_mei',
+        'data_opcao_pelo_mei',
+        'data_exclusao_do_mei'
+    ];
+
+    // RELACIONAMENTO BASEADO NA CONSTRAINT: fk_simples_empresa
     public function empresa(): BelongsTo
     {
-        return $this->belongsTo(Empresa::class, 'cnpj_basico', 'cnpj_basico'); // RETORNA O RELACIONAMENTO
+        // PERTENCE A UMA EMPRESA
+        return $this->belongsTo(Empresa::class, 'cnpj_basico', 'cnpj_basico');
     }
 }

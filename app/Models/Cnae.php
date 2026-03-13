@@ -1,36 +1,35 @@
-<?php // INÍCIO DO ARQUIVO PHP
-namespace App\Models; // NAMESPACE DO MODEL
-use Illuminate\Database\Eloquent\Model; // CLASSE BASE DO ELOQUENT
-use Illuminate\Database\Eloquent\Relations\HasMany; // TIPO DE RELACIONAMENTO
-class Cnae extends Model // DEFINIÇÃO DA CLASSE CNAE
+<?php
+
+// NAMESPACE DO MODEL
+namespace App\Models;
+
+// IMPORTACAO DA CLASSE ELOQUENT MODEL
+use Illuminate\Database\Eloquent\Model;
+
+// DECLARACAO DA CLASSE CNAE
+class Cnae extends Model
 {
+    // DEFINICAO DA CONEXAO ESPECIFICA SOLICITADA
     protected $connection = 'mysql_dados';
-    protected $table = 'cnaes'; // NOME DA TABELA
-    protected $primaryKey = 'codigo'; // CHAVE PRIMÁRIA
-    public $incrementing = false; // CHAVE PRIMÁRIA NÃO É AUTOINCREMENTAL
-    public $timestamps = false; // DESATIVA TIMESTAMPS
 
-    protected $fillable = [ // ATRIBUTOS PREENCHÍVEIS
-        'codigo', // COLUNA
-        'descricao', // COLUNA
-    ]; // FIM DO ARRAY
+    // NOME EXATO DA TABELA CONFORME O SQL
+    protected $table = 'cnaes';
 
-    // RELACIONAMENTO 1-N
-    public function estabelecimentos(): HasMany
-    {
-        return $this->hasMany(Estabelecimento::class, 'cnae_fiscal_principal', 'codigo');
-    }
+    // DEFINICAO DA CHAVE PRIMARIA (CODIGO)
+    protected $primaryKey = 'codigo';
 
-    public function getCodigoFormatadoAttribute(): string
-    {
-        $codigo = str_pad($this->codigo, 7, '0', STR_PAD_LEFT); // Garante que o código tenha 7 dígitos
-        
-        // Formata para o padrão visual
-        return sprintf('%s.%s-%s/%s',
-            substr($codigo, 0, 2), // Seção
-            substr($codigo, 2, 2), // Divisão
-            substr($codigo, 4, 1), // Grupo
-            substr($codigo, 5, 2)  // Classe
-        );
-    }
+    // DEFINICAO DO TIPO DA CHAVE PRIMARIA COMO STRING POIS E CHAR(7)
+    protected $keyType = 'string';
+
+    // DESATIVACAO DO AUTO INCREMENTO POIS A CHAVE NAO E NUMERICA
+    public $incrementing = false;
+
+    // DESATIVACAO DOS TIMESTAMPS POIS NAO EXISTEM NA TABELA
+    public $timestamps = false;
+
+    // ATRIBUTOS QUE PODEM SER PREENCHIDOS EM MASSA
+    protected $fillable = [
+        'codigo',
+        'descricao'
+    ];
 }
